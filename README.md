@@ -1,3 +1,3 @@
-# 5956-Big-Data-Project
+# Year In Data Files
 
-Collection of our code for the 5956 project. Feel free to add and update.
+Collection of our code for all our group projects. Feel free to add and update.
