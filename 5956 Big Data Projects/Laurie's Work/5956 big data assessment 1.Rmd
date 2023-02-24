@@ -22,9 +22,9 @@ head(Globalhealthdata)
 set.seed(38)
 n <- nrow(Globalhealthdata)
 index_selected <- sample(1:n, size = 3000, replace = TRUE)
-Global_sample <- Globalhealthdata[index_selected, ]
+Global_sample1 <- Globalhealthdata[index_selected, ]
 #Getting rid of N/A's
-Global_sample <- na.pass(Global_sample$Country,Global_sample$ISO,Global_sample$Sex,Global_sample$Year,Global_sample$Region,Global_sample$Superregion) %<% Global_sample <- na.omit(Global_sample)
+Global_sample <- na.omit(Global_sample1)
 View(Global_sample)
 #Counting number of N/A's in each column
 sapply(Global_sample, function(x) sum(is.na(x)))
