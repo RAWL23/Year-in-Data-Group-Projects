@@ -1,0 +1,104 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-02-09"
+---
+
+```{r}
+setwd("C:/Users/lrawl/OneDrive/Documents/Data Analytics/5956")
+#Gathering Data
+Globalhealthdata <- read.csv("~/Data Analytics/5956/IntOrg_NCD_variables_2022_02_02.csv")
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(caret)
+library(tidyr)
+#Looking at the first few rows of the data
+head(Globalhealthdata)
+-----------------------------------------------------------------------------------
+#Creating sample
+set.seed(38)
+n <- nrow(Globalhealthdata)
+index_selected <- sample(1:n, size = 3000, replace = TRUE)
+Global_sample <- Globalhealthdata[index_selected, ]
+#Getting rid of N/A's
+Global_sample <- na.pass(Global_sample$Country,Global_sample$ISO,Global_sample$Sex,Global_sample$Year,Global_sample$Region,Global_sample$Superregion) %<% Global_sample <- na.omit(Global_sample)
+View(Global_sample)
+#Counting number of N/A's in each column
+sapply(Global_sample, function(x) sum(is.na(x)))
+```
+
+## Weight and Obesity in Adults
+
+```{r}
+#Looking at obesity in sample
+library(ggplot2)
+ggplot(data = Global_sample)+ geom_histogram(mapping = aes(x = Prevalence_obesity_adults))+ labs(x="Prevalence of Obesity in Adults", y="Frequency", title = "Histogram of the Prevalence of Obesity in Adults")
+```
+
+Looking at this histograms shows that low prevalence of obesity is most common in the sample.
+
+```{r}
+#Looking at correlation between underweight adults and sex
+library(ggplot2)
+ggplot(data = Global_sample, mapping = aes(x = Prevalence_underweight_adults, colour = Sex)) +
+  geom_freqpoly(binwidth = 0.01)+labs(x="Prevalence of Underweight Adults", y="Frequency", title="Graph showing the Prevalence of Underweight Adults")
+
+```
+
+We can see from this graph that more males from around the world are underweight than females.
+
+```{r}
+#Looking at correlation between underweight adults and superrregion
+library(ggplot2)
+ggplot(data = Global_sample, mapping = aes(x = Prevalence_underweight_adults, colour = Superregion)) +
+  geom_freqpoly(binwidth = 0.01)+labs(x="Prevalence of Underweight Adults", y="Frequency", title="Prevalence of Underweight Adults by Superregion")
+```
+
+This graph shows a high prevalence of underweight adults in sub-saharan Africa and South Asia. Central and Eastern Europe, high-income Western countries, and high-income Asian Pacific countries have lower prevalence of underweight adults.
+
+```{r}
+#Correlation between morbidly obese adults and superregion
+ggplot(data = Global_sample, mapping = aes(x = Prevalence_morbid_obesity_adults, colour = Superregion)) +
+  geom_freqpoly(binwidth = 0.01)+labs(x="Prevalence of Morbidly Obese Adults",title = "Prevelence of Morbidly Obese Adults in Differing Superregions", y="Frequency")
+```
+
+This graph shows a high prevalence of morbidly obese adults in Oceania and low prevalence in Sub-Saharan Africa.
+
+
+
+## Results and Conclusions
+
+```{r}
+#Looking at correlation between underweight adults and super region
+library(ggplot2)
+ggplot(data = scaled_data, mapping = aes(x = Prevalence_underweight_adults, colour = factor(cluster))) +scale_color_discrete(name = "Cluster")+
+  geom_freqpoly(binwidth = 0.005)+labs(x="Prevalence of Underweight Adults", y="Frequency", title="Prevalence of Underweight Adults by Cluster")
+```
+This graph shows that cluster 2 has the lowest prevalence of underweight adults. Cluster 4 has the highest prevalence of underweight adults.
+
+
+```{r}
+ggplot(data = scaled_data, mapping = aes(x = Prevalence_obesity_adults, colour = factor(cluster))) +scale_color_discrete(name = "Cluster")+
+  geom_freqpoly(binwidth = 0.01)+labs(x="Prevalence of Obesity in Adults", y="Frequency", title="Prevalence of Obesity in Adults by Cluster")
+```
+Cluster 4 has the highest frequency for the lowest of obesity in adults. Cluster 2 and 1 have higher prevalences around the 0.2 mark.
+
+```{r}
+ggplot(data = scaled_data, mapping = aes(x = Prevalence_morbid_obesity_adults, colour = factor(cluster))) +scale_color_discrete(name = "Cluster")+
+  geom_freqpoly(binwidth = 0.005)+labs(x="Prevalence of Morbid Obesity in Adults", y="Frequency", title="Prevalence of Morbid Obesity in by Cluster")
+```
+Cluster 4 has the highest frequency of low prevalence of morbid obesity in adults, whereas cluster 3 has the lowest frequency of low prevalence. 
+
+```{r}
+#Comparing obesity and weight
+library(GGally)
+scaled_data$cluster<-as.character(scaled_data$cluster)
+ggpairs(scaled_data,                 # Data frame
+        columns = 6:8,        # Columns
+        aes(color = scaled_data$cluster,  # Color by group 
+            alpha = 0.5))
+```
+
