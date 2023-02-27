@@ -198,16 +198,16 @@ ggplot(data = clean_data, mapping = aes(x = Mean_BMI_children, colour = Sex)) +
 ##More observations of boys with a BMI on the lower end of the scale than girls, however the peak of observations of girls' BMI is slightly lower than the peak of the boys' BMI.
 
 #Plot an identical frequency polygon graph for mean BMI of adults by sex.
-ggplot(data = clean_data, mapping = aes(x = Mean_BMI_children, colour = Sex)) +
+ggplot(data = clean_data, mapping = aes(x = Mean_BMI_adults, colour = Sex)) +
   geom_freqpoly(binwidth = 0.1) +
-  labs(title = "Freqpoly of Mean BMI in Children by Sex", x = "Mean BMI in Children", y = "Count", colour = "Sex")
+  labs(title = "Freqpoly of Mean BMI in Adults by Sex", x = "Mean BMI in Adults", y = "Count", colour = "Sex")
 ##Frequency count peaks a similar points for both male and female BMI, around 25. Higher frequency count for males at the lower end of the BMI scale and higher frequency count for females at the higher end of the BMI scale.
 
 
 #Plot a frequency polygon graph showing mean BMI of children by Superregion.
-ggplot(data = clean_data, mapping = aes(x = Mean_BMI_adults, colour = Sex)) +
+ggplot(data = clean_data, mapping = aes(x = Mean_BMI_children, colour = Superregion)) +
   geom_freqpoly(binwidth = 0.1) +
-  labs(title = "Freqpoly of Mean BMI in Adults by Sex", x = "Mean BMI in Adults", y = "Count", colour = "Sex")
+  labs(title = "Freqpoly of Mean BMI in Children by Sex", x = "Mean BMI in Children", y = "Count", colour = "Superregion")
 ##Most observations in Sub-Saharan Africa, followed by High-income Western Countries.
 ##Oceania shows the most observations at the higher end of the BMI scale, with South Asia's observations peaking at the lower end of the BMI scale but with fewer observations overall.
 
@@ -271,7 +271,7 @@ ggplot(clean_data) +
 ggplot(data = clean_data, mapping = aes(x = Diabetes_prevalence, colour= Sex)) +
   geom_freqpoly(binwidth = 0.01) +
   labs(title = "Diabetes Prevalence in Sex", x = "Diabetes Prevalence", y = "Count", colour = "Sex")
-##Diabetes prevalence in males and females remain at very similar levels throughout the scale, slightly more females with a prevelance between 0.1-0.15
+##Diabetes prevalence in males and females remain at very similar levels throughout the scale, slightly more females with a prevalance between 0.1-0.15
 
 
 #Plot a frequency polygon of diabetes prevalence by Superregion
