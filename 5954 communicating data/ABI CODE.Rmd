@@ -1,0 +1,215 @@
+
+---
+title: "Presenting Results Group Code"
+output: html_document
+date: "2023-03-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+
+library(dplyr)
+library(ggplot2)
+library(ggupset)
+library(ggridges)
+library(forcats)
+library(tidyverse)
+library(hexbin)
+library(htmltools)
+library(hrbrthemes)
+library(viridis)
+library(ggExtra)
+library(ggridges)
+library(cowplot)
+library(colorspace)
+library(ggrepel)
+library(GGally)
+library(gapminder)
+library(countrycode)
+library(gapminder)
+library(tibble)
+library(lemon)
+library(patchwork)
+library(lubridate)
+library(plotly)
+library(ggrepel)
+```
+
+```{r}
+life_expectancy_data<-read.csv("Life Expectancy Data.csv")
+clean_data<-na.omit(life_expectancy_data)
+```
+
+```{r, include=FALSE}
+df<- data.frame(country = c("Afghanistan", "Albania", "Algeria", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Ivory Coast", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Cook Islands", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Democratic People's Repubic of Korea", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominican Republic","Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Republic of Korea", "Republic of Moldova", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syrian Arab Republic", "Tajikistan", "Thailand", "Macedonia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom of Great Britain and Northern Ireland", "United Republic of Tanzania", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Viet Nam", "Yemen", "Zambia", "Zimbabwe"))
+
+df$continent<-countrycode(sourcevar = df[,"country"],
+                          origin = "country.name",
+                          destination = "continent")
+```
+
+
+```{r}
+ggplot(clean_data) +
+  geom_bar(mapping = aes(x = Status), fill = c("firebrick","slateblue")) +
+  scale_y_continuous(breaks = seq(0,2000,100)) +
+  theme_ipsum() +
+  labs(title = "Count of Observations from Developed/Developing Countries in Dataset")
+```
+
+```{r}
+ggplot(clean_data, aes(x = Year, y = infant_deaths, fill = Status)) +
+  geom_bar(postion = "stack", stat = "identity") +
+  scale_x_continuous(breaks = seq(2000,2015,1)) +
+  theme_ipsum() +
+  labs(title = "Infant Deaths per Year in Developing and Developed Countries", y = "Infant Deaths")
+```
+
+
+```{r}
+ggplot(clean_data, aes(x = Status, y = Life_expectancy, fill = Status)) +
+  geom_boxplot() +
+  scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+  geom_jitter(color = "black", size = 0.4, alpha = 0.9) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 11)
+  ) +
+  ggtitle("Life Expectancy by Country Status") +
+  xlab("") +
+  ylab("Life Expectancy")
+  
+```
+
+```{r}
+ggplot(clean_data, aes(x = Life_expectancy, fill = Status)) +
+  geom_histogram(color = "#e9ecef", alpha = 0.6, position = 'identity') +
+  scale_fill_manual(values = c("#69b3a2", "#404080")) +
+  theme_ipsum() +
+  labs(fill = "Country Status", title = "Life Expectancy in Developed and Developing Countries", caption = "Overlapping Life Expectancy Shown by the Blue Sections in the Bars") +
+  xlab("Life Expectancy")
+  
+```
+label = "Luxembourg",
+             x = 112000,
+             y = 19000,
+             label.padding = unit(0.55, "lines"),
+             label.size = 0.2,
+             color = "black",
+             fill = "#69b3a2")
+
+
+```{r}
+ggplot(clean_data, aes(x = GDP, y = percentage_expenditure, label = Country)) +
+  geom_point(color = case_when(clean_data$percentage_expenditure > 15000 ~ "#69b3a2",
+                               TRUE ~ "black")) +
+  geom_smooth(method = lm, color = "red", fill = "#69b3a2", se = TRUE) +
+  theme_ipsum() +
+   labs(title = "% Expenditure on Heathcare Compared to GDP", caption = "Percentage Expenditure on Heath as % of GDP Compared to Total GDP") +
+  ylab("% Expenditure") +
+  scale_y_continuous(breaks = seq(0,19000,1000)) +
+  geom_label(label = "Luxembourg",
+             x = 112000,
+             y = 19000,
+             label.padding = unit(0.4, "lines"),
+             label.size = 0.1,
+             color = "black",
+             fill = "#69b3a2",
+             hjust = "inward")
+
+```
+
+```{r}
+ggplot(clean_data, aes(x = Schooling, group = Status, fill = Status)) +
+  geom_density(adjust = 1.5) +
+  theme_ipsum() +
+  facet_wrap(~Status) +
+  theme(
+    legend.position = "none",
+    panel.spacing = unit(0.1, "lines"),
+    axis.ticks.x = element_blank()
+  ) +
+  scale_x_continuous(breaks = seq(0,25,5), limits = c(0,25), sec.axis = dup_axis()) +
+  labs(title = "Average Years in Schooling in Developed and Developing Countries")
+```
+
+
+```{r}
+ggplot(clean_data, aes(x = Alcohol, fill = Status)) +
+  geom_histogram (color = "#e9ecef", alpha = 0.6, position = "identity") +
+  scale_fill_manual(values = c("#69b3a2", "#404080")) +
+  theme(legend.position = "none") +
+  theme_ipsum() +
+  labs(fill = "", title = "Alcohol Consumption in Developed and Developing Countries", caption = "Overlapping counts of Alcohol Consumptions Shown by Blue Sections of Bars")
+```
+```{r}
+ggplot(clean_data, aes(x = Status, y = Adult_Mortality, fill = Status)) +
+  geom_boxplot(alpha = 0.3) +
+  stat_summary(fun.y = mean, geom = "point", shape = 20, size = 5, colour = "red", fill = "red") +
+  theme(legend.position = "none") +
+  scale_fill_brewer(palette = "Set1") +
+  labs(title = "Adult Mortality Rate in Developed and Developing Countries", caption = "Red Dot Shows Mean Adult Mortality Rate")
+```
+
+
+
+```{r}
+ggplot(clean_data, aes(fill = Status, y = Life_expectancy, x = Year)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  scale_x_continuous(breaks = seq(2000,2015,1)) +
+  scale_y_continuous(breaks = seq(0,90,5)) +
+  theme_ipsum() +
+  labs(title = "Life Expectancy by Year") +
+  xlab("Year") +
+  ylab("Life Expectancy")
+```
+
+```{r}
+ggplot(clean_data, aes(x = Status, y = Schooling, fill = Status)) +
+  geom_boxplot() +
+  scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+  geom_jitter(color = "black", size = 0.4, alpha = 0.9) +
+  theme_ipsum() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 11)
+  ) +
+  ggtitle("Schooling by Country Status") +
+  xlab("") +
+  ylab("Schooling")
+```
+
+```{r}
+ggplot(clean_data, aes(x = Life_expectancy, y = Schooling, size = GDP)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "How Levels of Schooling interacts with Life Expectancty and GDP", x = "Life Expectancy")
+  
+ 
+```
+
+
+
+```{r}
+model<-lm(Life_expectancy~Year + Status + Adult_Mortality + Alcohol + percentage_expenditure + Hepatitis_B + Measles + BMI + under_five_deaths + Polio + Total_expenditure + HIV_AIDS + GDP + Population + thinness_5_to_9_years + Income_composition_of_resources + Schooling, data = clean_data)
+
+summary(model)
+```
+```{r}
+sigmodel<-lm(Life_expectancy~Year + Status + Adult_Mortality + Alcohol + BMI + under_five_deaths + Polio + Total_expenditure + HIV_AIDS + Income_composition_of_resources + Schooling, data = clean_data)
+```
+
+```{r}
+plot(sigmodel)
+```
+
+```{r}
+clean_data$fitted_values<-predict(sigmodel)
+
+ggplot(clean_data) +
+  geom_point(aes(x = fitted_values, y = Life_expectancy)) +
+  labs(x = "Fitted Values", y = "Life Expectancy")
+```
+
+
